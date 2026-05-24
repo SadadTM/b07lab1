@@ -1,2 +1,0 @@
-This is the first lab for CSCB07
-We are using git and github with java.
