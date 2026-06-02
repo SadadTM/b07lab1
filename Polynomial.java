@@ -1,3 +1,8 @@
+import java.io.File;
+import java.io.FileNotFoundException;
+import java.io.PrintWriter;
+import java.util.Scanner;
+
 public class Polynomial {
     double[] coefficients;
     int[] exponents;
@@ -115,4 +120,61 @@ public class Polynomial {
         }
         return new Polynomial(coeffs, exps);
     }
+
+    public Polynomial(File f) throws FileNotFoundException{
+        Scanner scanner = new Scanner(f);
+        String line = scanner.nextLine();
+        String [] polystr = line.split("[+]|(?=-)");
+        double[] coeffs = new double[polystr.length];
+        int[] exps = new int[polystr.length];
+
+        for (int i=0;i<polystr.length;i++){
+            if (polystr[i].isEmpty()){
+                continue;
+            }
+
+            if(!(polystr[i].contains("x"))){
+                coeffs[i]=Double.parseDouble(polystr[i]);
+                exps[i]=0;
+            }
+            else{
+                String[] parts = polystr[i].split("x");
+                coeffs[i]=Double.parseDouble(parts[0]);
+                if (parts.length==1){
+                    exps[i]=1;
+                }
+                else{
+                    exps[i]=Integer.parseInt(parts[1]);
+                }
+            }
+        }
+
+        this.coefficients=coeffs;
+        this.exponents=exps;
+
+        scanner.close();
+    }
+
+    public void saveToFile(String f) throws FileNotFoundException{
+        PrintWriter writer = new PrintWriter(f);
+        for (int i=0; i<this.coefficients.length; i++){
+            if(i!=0 && this.coefficients[i]>0){
+                writer.print("+");
+            }
+            if(this.exponents[i]==0){
+                writer.print(this.coefficients[i]);
+            }
+            else if(this.exponents[i]==1){
+                writer.print(this.coefficients[i]);
+                writer.print("x");
+            }
+            else{
+                writer.print(this.coefficients[i]);
+                writer.print("x");
+                writer.print(this.exponents[i]);
+            }
+        }
+        writer.close();
+    }
+    
 }
